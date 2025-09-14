@@ -13,12 +13,16 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        'studio': ['League Spartan', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        surface: "hsl(var(--surface))",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -38,6 +42,10 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          blue: "hsl(var(--accent-blue))",
+          purple: "hsl(var(--accent-purple))",
+          green: "hsl(var(--accent-green))",
+          pink: "hsl(var(--accent-pink))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -46,6 +54,17 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        neutral: {
+          100: "hsl(var(--neutral-100))",
+          200: "hsl(var(--neutral-200))",
+          300: "hsl(var(--neutral-300))",
+          400: "hsl(var(--neutral-400))",
+          500: "hsl(var(--neutral-500))",
+          600: "hsl(var(--neutral-600))",
+          700: "hsl(var(--neutral-700))",
+          800: "hsl(var(--neutral-800))",
+          900: "hsl(var(--neutral-900))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -80,10 +99,25 @@ export default {
             height: "0",
           },
         },
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "slide-up": {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "scale-in": {
+          "0%": { opacity: "0", transform: "scale(0.95)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+        "slide-up": "slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+        "scale-in": "scale-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
       },
     },
   },
