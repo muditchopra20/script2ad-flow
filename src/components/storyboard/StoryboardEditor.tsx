@@ -86,8 +86,8 @@ export const StoryboardEditor = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="max-w-7xl mx-auto">
+      <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-display font-bold">Storyboard Editor</h1>
           <p className="text-muted-foreground mt-2">Fine-tune your video sequence and maintain brand consistency</p>
@@ -106,7 +106,7 @@ export const StoryboardEditor = () => {
       </div>
 
       {/* Timeline Header */}
-      <Card className="card-studio p-4">
+      <Card className="card-studio p-4 mb-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Badge className="bg-accent-blue/10 text-accent-blue">Total: 0:30</Badge>
@@ -124,113 +124,153 @@ export const StoryboardEditor = () => {
         </div>
       </Card>
 
-      {/* Storyboard Frames */}
-      <div className="grid gap-6">
+      {/* Vertical Storyboard Timeline */}
+      <div className="space-y-6">
         {frames.map((frame, index) => (
-          <Card 
-            key={frame.id} 
-            className={`card-studio p-6 cursor-pointer transition-all ${
-              selectedFrame === frame.id ? 'ring-2 ring-accent-blue' : ''
-            }`}
-            onClick={() => setSelectedFrame(frame.id)}
-          >
-            <div className="space-y-4">
-              {/* Frame Preview - Large and prominent */}
-              <div className="relative">
-                <img 
-                  src={frame.imageUrl} 
-                  alt={frame.description}
-                  className="w-full h-64 object-cover rounded-lg shadow-md"
-                />
-                
-                <div className="absolute top-3 left-3">
-                  <Badge variant="secondary" className="text-xs bg-black/70 text-white border-0">
-                    {frame.timestamp}
-                  </Badge>
-                </div>
-                
-                <div className="absolute top-3 right-3">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`w-8 h-8 p-0 ${frame.isLocked ? 'bg-accent-blue/90 text-white' : 'bg-black/50 text-white hover:bg-black/70'}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleLock(frame.id);
-                    }}
-                  >
-                    <Lock className="w-4 h-4" />
-                  </Button>
-                </div>
-                
-                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
-                  <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-lg">
-                    {index + 1}
-                  </div>
-                </div>
+          <div key={frame.id} className="relative">
+            {/* Connecting Line */}
+            {index < frames.length - 1 && (
+              <div className="absolute left-1/2 bottom-0 w-0.5 h-6 bg-neutral-300 transform translate-y-full z-10"></div>
+            )}
+            
+            <Card 
+              className={`card-studio p-6 cursor-pointer transition-all ${
+                selectedFrame === frame.id ? 'ring-2 ring-accent-blue' : ''
+              } relative`}
+              onClick={() => setSelectedFrame(frame.id)}
+            >
+              {/* Frame Number Badge */}
+              <div className="absolute -left-4 top-6 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-lg z-20">
+                {index + 1}
               </div>
-
-              {/* Frame Details - Below image */}
-              <div className="space-y-4">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-primary">{frame.scene}</h3>
-                    <div className="flex items-center gap-3 mt-2">
-                      <Badge className="bg-neutral-200 text-neutral-700 text-xs">
-                        {frame.shotType}
+              
+              <div className="flex gap-8">
+                {/* Left Column - Image and Controls */}
+                <div className="w-80 space-y-4">
+                  {/* Frame Image */}
+                  <div className="relative">
+                    <img 
+                      src={frame.imageUrl} 
+                      alt={frame.description}
+                      className="w-full h-48 object-cover rounded-lg shadow-sm border border-neutral-200"
+                    />
+                    
+                    <div className="absolute top-3 left-3">
+                      <Badge variant="secondary" className="text-xs bg-black/70 text-white border-0">
+                        {frame.timestamp}
                       </Badge>
-                      <span className="text-sm text-muted-foreground font-medium">{frame.duration}</span>
-                      {frame.isLocked && (
-                        <Badge className="bg-accent-blue/10 text-accent-blue text-xs">
-                          <Lock className="w-3 h-3 mr-1" />
-                          Locked
-                        </Badge>
-                      )}
+                    </div>
+                    
+                    <div className="absolute top-3 right-3">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className={`w-8 h-8 p-0 ${frame.isLocked ? 'bg-accent-blue/90 text-white' : 'bg-black/50 text-white hover:bg-black/70'}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleLock(frame.id);
+                        }}
+                      >
+                        <Lock className="w-4 h-4" />
+                      </Button>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="w-9 h-9 p-0 hover:bg-neutral-100">
-                      <Copy className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm" className="w-9 h-9 p-0 hover:bg-neutral-100">
-                      <Edit3 className="w-4 h-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm" className="w-9 h-9 p-0 text-destructive hover:text-destructive hover:bg-red-50">
-                      <Trash2 className="w-4 h-4" />
+                  {/* Generate Image Section */}
+                  <div className="bg-neutral-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-sm text-neutral-700 mb-3">GENERATE IMAGE</h4>
+                    <Button variant="outline" size="sm" className="w-full">
+                      Regenerate Frame
                     </Button>
                   </div>
                 </div>
-                
-                <p className="text-muted-foreground leading-relaxed">{frame.description}</p>
-                
-                <div className="flex items-center gap-3 pt-2">
-                  <Button variant="outline" size="sm" className="hover:bg-neutral-50">
-                    Customize Frame
-                  </Button>
-                  <Button variant="ghost" size="sm" className="text-accent-blue hover:bg-accent-blue/10">
-                    AI Suggestions
-                  </Button>
+
+                {/* Right Column - Frame Details */}
+                <div className="flex-1 space-y-6">
+                  {/* Header */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <h3 className="text-2xl font-bold text-primary mb-2">{frame.scene}</h3>
+                      <div className="flex items-center gap-3">
+                        <Badge className="bg-neutral-200 text-neutral-700">
+                          {frame.shotType}
+                        </Badge>
+                        <span className="text-sm text-muted-foreground font-medium">{frame.duration}</span>
+                        {frame.isLocked && (
+                          <Badge className="bg-accent-blue/10 text-accent-blue">
+                            <Lock className="w-3 h-3 mr-1" />
+                            Locked
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <Button variant="ghost" size="sm" className="w-9 h-9 p-0 hover:bg-neutral-100">
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" className="w-9 h-9 p-0 hover:bg-neutral-100">
+                        <Edit3 className="w-4 h-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" className="w-9 h-9 p-0 text-destructive hover:text-destructive hover:bg-red-50">
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  {/* Description */}
+                  <div>
+                    <p className="text-muted-foreground leading-relaxed mb-4">{frame.description}</p>
+                  </div>
+                  
+                  {/* Text Fields Section */}
+                  <div className="bg-neutral-50 p-4 rounded-lg">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-semibold text-sm text-neutral-700">TEXT FIELDS</h4>
+                      <Button variant="ghost" size="sm" className="text-xs">
+                        Customize
+                      </Button>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="p-3 bg-white rounded border border-neutral-200">
+                        <div className="flex items-center gap-2 mb-1">
+                          <div className="w-3 h-3 bg-neutral-400 rounded-sm"></div>
+                          <span className="text-sm text-neutral-600">Body Text</span>
+                        </div>
+                        <p className="text-xs text-neutral-500 truncate">{frame.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="flex items-center gap-3">
+                    <Button variant="outline" size="sm" className="hover:bg-neutral-50">
+                      Customize Frame
+                    </Button>
+                    <Button variant="ghost" size="sm" className="text-accent-blue hover:bg-accent-blue/10">
+                      AI Suggestions
+                    </Button>
+                  </div>
                 </div>
+              </div>
+            </Card>
+          </div>
+        ))}
+        
+        {/* Add Frame Section */}
+        <div className="relative">
+          <Card className="card-studio p-8 border-dashed border-2 hover:border-accent-blue/50 transition-colors cursor-pointer">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 rounded-full bg-accent-blue/10 flex items-center justify-center mx-auto">
+                <Plus className="w-8 h-8 text-accent-blue" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold">Add Frame</h3>
+                <p className="text-sm text-muted-foreground">Create another scene for your storyboard</p>
               </div>
             </div>
           </Card>
-        ))}
-        
-        {/* Add Frame Button */}
-        <Card className="card-studio p-6 border-dashed border-2 hover:border-accent-blue/50 transition-colors cursor-pointer">
-          <div className="flex items-center justify-center py-8">
-            <div className="text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-accent-blue/10 flex items-center justify-center mx-auto">
-                <Plus className="w-6 h-6 text-accent-blue" />
-              </div>
-              <div>
-                <h3 className="font-semibold">Add New Scene</h3>
-                <p className="text-sm text-muted-foreground">Create another frame for your storyboard</p>
-              </div>
-            </div>
-          </div>
-        </Card>
+        </div>
       </div>
     </div>
   );
