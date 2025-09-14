@@ -4,6 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Play, Lock, Edit3, Copy, Trash2, Settings } from "lucide-react";
 
+// Import storyboard images
+import storyboardFrame1 from "@/assets/storyboard-frame-1.jpg";
+import storyboardFrame2 from "@/assets/storyboard-frame-2.jpg";
+import storyboardFrame3 from "@/assets/storyboard-frame-3.jpg";
+import storyboardFrame4 from "@/assets/storyboard-frame-4.jpg";
+import storyboardFrame5 from "@/assets/storyboard-frame-5.jpg";
+
 interface StoryboardFrame {
   id: string;
   scene: string;
@@ -12,6 +19,7 @@ interface StoryboardFrame {
   shotType: string;
   isLocked: boolean;
   timestamp: string;
+  imageUrl: string;
 }
 
 const mockFrames: StoryboardFrame[] = [
@@ -23,6 +31,7 @@ const mockFrames: StoryboardFrame[] = [
     shotType: 'Close-up',
     isLocked: false,
     timestamp: '0:00',
+    imageUrl: storyboardFrame1,
   },
   {
     id: '2',
@@ -32,6 +41,7 @@ const mockFrames: StoryboardFrame[] = [
     shotType: 'Wide',
     isLocked: true,
     timestamp: '0:03',
+    imageUrl: storyboardFrame2,
   },
   {
     id: '3',
@@ -41,6 +51,7 @@ const mockFrames: StoryboardFrame[] = [
     shotType: 'Medium',
     isLocked: false,
     timestamp: '0:08',
+    imageUrl: storyboardFrame3,
   },
   {
     id: '4',
@@ -50,6 +61,7 @@ const mockFrames: StoryboardFrame[] = [
     shotType: 'Split Screen',
     isLocked: false,
     timestamp: '0:15',
+    imageUrl: storyboardFrame4,
   },
   {
     id: '5',
@@ -59,6 +71,7 @@ const mockFrames: StoryboardFrame[] = [
     shotType: 'Graphic',
     isLocked: true,
     timestamp: '0:22',
+    imageUrl: storyboardFrame5,
   },
 ];
 
@@ -121,22 +134,26 @@ export const StoryboardEditor = () => {
             }`}
             onClick={() => setSelectedFrame(frame.id)}
           >
-            <div className="flex gap-6">
-              {/* Frame Preview */}
-              <div className="w-48 h-28 bg-gradient-to-br from-neutral-100 to-neutral-200 rounded-lg flex items-center justify-center shrink-0 relative">
-                <Play className="w-8 h-8 text-neutral-400" />
+            <div className="space-y-4">
+              {/* Frame Preview - Large and prominent */}
+              <div className="relative">
+                <img 
+                  src={frame.imageUrl} 
+                  alt={frame.description}
+                  className="w-full h-64 object-cover rounded-lg shadow-md"
+                />
                 
-                <div className="absolute top-2 left-2">
-                  <Badge variant="secondary" className="text-xs bg-black/50 text-white border-0">
+                <div className="absolute top-3 left-3">
+                  <Badge variant="secondary" className="text-xs bg-black/70 text-white border-0">
                     {frame.timestamp}
                   </Badge>
                 </div>
                 
-                <div className="absolute top-2 right-2">
+                <div className="absolute top-3 right-3">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className={`w-8 h-8 p-0 ${frame.isLocked ? 'bg-accent-blue/10 text-accent-blue' : 'bg-white/10 text-white'}`}
+                    className={`w-8 h-8 p-0 ${frame.isLocked ? 'bg-accent-blue/90 text-white' : 'bg-black/50 text-white hover:bg-black/70'}`}
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleLock(frame.id);
@@ -146,25 +163,26 @@ export const StoryboardEditor = () => {
                   </Button>
                 </div>
                 
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-                  <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                <div className="absolute -bottom-3 left-1/2 transform -translate-x-1/2">
+                  <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold shadow-lg">
                     {index + 1}
                   </div>
                 </div>
               </div>
 
-              {/* Frame Details */}
-              <div className="flex-1 space-y-3">
+              {/* Frame Details - Below image */}
+              <div className="space-y-4">
                 <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-primary">{frame.scene}</h3>
-                    <div className="flex items-center gap-4 mt-1">
+                  <div className="flex-1">
+                    <h3 className="text-xl font-bold text-primary">{frame.scene}</h3>
+                    <div className="flex items-center gap-3 mt-2">
                       <Badge className="bg-neutral-200 text-neutral-700 text-xs">
                         {frame.shotType}
                       </Badge>
-                      <span className="text-sm text-muted-foreground">{frame.duration}</span>
+                      <span className="text-sm text-muted-foreground font-medium">{frame.duration}</span>
                       {frame.isLocked && (
                         <Badge className="bg-accent-blue/10 text-accent-blue text-xs">
+                          <Lock className="w-3 h-3 mr-1" />
                           Locked
                         </Badge>
                       )}
@@ -172,13 +190,13 @@ export const StoryboardEditor = () => {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
+                    <Button variant="ghost" size="sm" className="w-9 h-9 p-0 hover:bg-neutral-100">
                       <Copy className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
+                    <Button variant="ghost" size="sm" className="w-9 h-9 p-0 hover:bg-neutral-100">
                       <Edit3 className="w-4 h-4" />
                     </Button>
-                    <Button variant="ghost" size="sm" className="w-8 h-8 p-0 text-destructive hover:text-destructive">
+                    <Button variant="ghost" size="sm" className="w-9 h-9 p-0 text-destructive hover:text-destructive hover:bg-red-50">
                       <Trash2 className="w-4 h-4" />
                     </Button>
                   </div>
@@ -187,10 +205,10 @@ export const StoryboardEditor = () => {
                 <p className="text-muted-foreground leading-relaxed">{frame.description}</p>
                 
                 <div className="flex items-center gap-3 pt-2">
-                  <Button variant="outline" size="sm">
+                  <Button variant="outline" size="sm" className="hover:bg-neutral-50">
                     Customize Frame
                   </Button>
-                  <Button variant="ghost" size="sm" className="text-accent-blue">
+                  <Button variant="ghost" size="sm" className="text-accent-blue hover:bg-accent-blue/10">
                     AI Suggestions
                   </Button>
                 </div>
