@@ -3,9 +3,9 @@ import { StoryboardEditor } from "@/components/storyboard/StoryboardEditor";
 
 const StoryboardPage = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      <main className="container max-w-[var(--container-max)] py-8">
+      <main className="flex-1">
         <StoryboardEditor />
       </main>
     </div>
