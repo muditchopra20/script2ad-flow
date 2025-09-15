@@ -8,15 +8,30 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { GripVertical, Lock, Unlock, RefreshCw } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { 
+  GripVertical, 
+  Lock, 
+  Unlock, 
+  RefreshCw, 
+  Copy, 
+  Trash2, 
+  MoreHorizontal,
+  Eye,
+  Zap
+} from "lucide-react";
 import type { StoryboardFrameData } from "./types";
 
 interface StoryboardFrameProps {
   frame: StoryboardFrameData;
   index: number;
   isSelected: boolean;
+  isMultiSelected?: boolean;
   onSelect: () => void;
+  onMultiSelect?: (checked: boolean) => void;
   onUpdate: (frameId: string, updates: Partial<StoryboardFrameData>) => void;
+  onDuplicate?: () => void;
+  onDelete?: () => void;
   zoomLevel: number;
 }
 
@@ -46,8 +61,12 @@ export const StoryboardFrame = ({
   frame,
   index,
   isSelected,
+  isMultiSelected = false,
   onSelect,
+  onMultiSelect,
   onUpdate,
+  onDuplicate,
+  onDelete,
   zoomLevel
 }: StoryboardFrameProps) => {
   const {
@@ -72,31 +91,85 @@ export const StoryboardFrame = ({
   const cardScale = zoomLevel / 100;
 
   return (
-    <Card
-      ref={setNodeRef}
-      style={style}
-      className={`card-studio cursor-pointer transition-all transform ${
-        isSelected ? 'ring-2 ring-accent-blue shadow-lg' : 'hover:shadow-md'
-      } ${isDragging ? 'z-50' : ''}`}
-      onClick={onSelect}
-    >
-      {/* Drag Handle */}
-      <div
-        className="absolute top-2 left-2 z-10 cursor-grab active:cursor-grabbing"
-        {...attributes}
-        {...listeners}
+    <div className="group relative">
+      <Card
+        ref={setNodeRef}
+        style={style}
+        className={`card-studio cursor-pointer transition-all transform ${
+          isSelected ? 'ring-2 ring-accent-blue shadow-lg' : 'hover:shadow-md'
+        } ${isMultiSelected ? 'ring-2 ring-accent-purple shadow-lg' : ''} ${
+          isDragging ? 'z-50' : ''
+        }`}
+        onClick={onSelect}
       >
-        <div className="w-6 h-6 rounded bg-black/20 flex items-center justify-center">
-          <GripVertical className="w-3 h-3 text-white" />
-        </div>
-      </div>
+        {/* Multi-Select Checkbox */}
+        {onMultiSelect && (
+          <div className="absolute top-2 left-8 z-20 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Checkbox
+              checked={isMultiSelected}
+              onCheckedChange={onMultiSelect}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white/90 border-white/90"
+            />
+          </div>
+        )}
 
-      {/* Frame Number */}
-      <div className="absolute top-2 right-2 z-10">
-        <Badge className="bg-primary text-primary-foreground font-bold">
-          #{index + 1}
-        </Badge>
-      </div>
+        {/* Quick Actions Toolbar */}
+        <div className="absolute top-2 right-2 z-20 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-8 h-8 p-0 bg-black/50 text-white hover:bg-black/70"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDuplicate?.();
+            }}
+          >
+            <Copy className="w-4 h-4" />
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-8 h-8 p-0 bg-black/50 text-white hover:bg-red-500/70"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete?.();
+            }}
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+        {/* Drag Handle */}
+        <div
+          className="absolute top-2 left-2 z-10 cursor-grab active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+        >
+          <div className="w-6 h-6 rounded bg-black/20 flex items-center justify-center">
+            <GripVertical className="w-3 h-3 text-white" />
+          </div>
+        </div>
+
+        {/* Frame Number & Status */}
+        <div className="absolute bottom-2 left-2 z-10 flex items-center gap-2">
+          <Badge className="bg-primary text-primary-foreground font-bold">
+            #{index + 1}
+          </Badge>
+          
+          {/* Consistency Indicators */}
+          <div className="flex gap-1">
+            {frame.characterLock && (
+              <div className="w-2 h-2 bg-accent-purple rounded-full" title="Character locked" />
+            )}
+            {frame.brandLock && (
+              <div className="w-2 h-2 bg-accent-green rounded-full" title="Brand locked" />
+            )}
+            {frame.visualLock && (
+              <div className="w-2 h-2 bg-accent-pink rounded-full" title="Visual style locked" />
+            )}
+          </div>
+        </div>
 
       {/* Image Preview */}
       <div className="relative">
@@ -113,10 +186,11 @@ export const StoryboardFrame = ({
           </Badge>
         </div>
         
+        {/* Regenerate Button */}
         <Button
           variant="ghost"
           size="sm"
-          className="absolute top-2 right-8 w-8 h-8 p-0 bg-black/50 text-white hover:bg-black/70"
+          className="absolute bottom-2 right-2 w-8 h-8 p-0 bg-black/50 text-white hover:bg-accent-blue/70 opacity-0 group-hover:opacity-100 transition-opacity"
           onClick={(e) => {
             e.stopPropagation();
             // Handle regenerate
@@ -124,6 +198,14 @@ export const StoryboardFrame = ({
         >
           <RefreshCw className="w-4 h-4" />
         </Button>
+        
+        {/* AI Enhancement Indicator */}
+        <div className="absolute top-2 right-12 opacity-0 group-hover:opacity-100 transition-opacity">
+          <Badge variant="secondary" className="text-xs bg-accent-blue/20 text-accent-blue border-0">
+            <Zap className="w-3 h-3 mr-1" />
+            AI Ready
+          </Badge>
+        </div>
       </div>
 
       {/* Frame Content */}
@@ -242,6 +324,12 @@ export const StoryboardFrame = ({
           </div>
         </div>
       </div>
-    </Card>
+      </Card>
+      
+      {/* Frame Connection Line */}
+      {index < 4 && ( // Assuming we don't show connector after last frame
+        <div className="absolute -right-3 top-1/2 transform -translate-y-1/2 w-6 h-0.5 bg-gradient-to-r from-accent-blue to-accent-purple opacity-30 group-hover:opacity-60 transition-opacity"></div>
+      )}
+    </div>
   );
 };
