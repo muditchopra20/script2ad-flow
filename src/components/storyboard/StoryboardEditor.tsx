@@ -16,20 +16,7 @@ import storyboardFrame3 from "@/assets/storyboard-frame-3.jpg";
 import storyboardFrame4 from "@/assets/storyboard-frame-4.jpg";
 import storyboardFrame5 from "@/assets/storyboard-frame-5.jpg";
 
-export interface StoryboardFrameData {
-  id: string;
-  scene: string;
-  duration: string;
-  description: string;
-  shotType: string;
-  visualStyle: string;
-  characterLock: boolean;
-  brandLock: boolean;
-  visualLock: boolean;
-  timestamp: string;
-  imageUrl: string;
-  scriptText: string;
-}
+import type { StoryboardFrameData } from "./types";
 
 const mockFrames: StoryboardFrameData[] = [
   {

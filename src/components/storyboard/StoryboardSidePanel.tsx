@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { X, Save } from "lucide-react";
-import { StoryboardFrameData } from "./StoryboardEditor";
+import type { StoryboardFrameData } from "./types";
 
 interface StoryboardSidePanelProps {
   frame: StoryboardFrameData;

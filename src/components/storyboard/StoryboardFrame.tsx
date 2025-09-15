@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { GripVertical, Lock, Unlock, RefreshCw } from "lucide-react";
-import { StoryboardFrameData } from "./StoryboardEditor";
+import type { StoryboardFrameData } from "./types";
 
 interface StoryboardFrameProps {
   frame: StoryboardFrameData;
